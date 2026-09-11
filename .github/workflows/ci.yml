@@ -1,0 +1,65 @@
+name: CI
+
+# Corre en cada push y PR. Todo lo que hay aca es GRATIS: nada llama a la
+# API de OpenAI, no necesita ningun secret. Los tests que si llaman al
+# modelo real (mvp/tests/test_smoke.py, test_security*.py, y el dataset de
+# verificacion/) tienen costo y viven en un workflow aparte disparado a
+# mano: ver .github/workflows/integracion-pagada.yml.
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  dam-pipeline:
+    name: dam_pipeline - tests unitarios
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+          cache: "pip"
+      - name: Instalar dependencias
+        run: |
+          pip install -r dam_pipeline/requirements.txt
+          pip install pytest
+      - name: Correr tests unitarios (Etapa 1 y Etapa 2, sin red)
+        run: pytest dam_pipeline/tests/ -v
+
+  mvp:
+    name: mvp - tests unitarios
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+          cache: "pip"
+      - name: Instalar dependencias
+        working-directory: mvp
+        run: |
+          pip install -r requirements.txt
+          pip install pytest
+      - name: Correr tests unitarios (notes.py + validaciones de analizar_foto)
+        working-directory: mvp
+        # Sin OPENAI_API_KEY a proposito: si alguno de estos tests
+        # terminara necesitando la API real, esto lo hace fallar temprano
+        # en vez de dejarlo pasar por casualidad en una maquina con .env.
+        run: pytest tests/test_unit.py -v
+
+  verificacion-import-check:
+    name: verificacion - los modulos importan (sin correr el dataset)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+          cache: "pip"
+      - name: Instalar dependencias
+        run: pip install -r verificacion/requirements.txt
+      - name: Verificar que el harness de evaluacion importa sin errores
+        working-directory: verificacion
+        run: python -c "import dataset, metricas, traza, prompts_fragmentos, conftest; print('OK')"

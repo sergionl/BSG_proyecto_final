@@ -67,6 +67,22 @@ Abre `http://127.0.0.1:8000`, sube una foto y tus notas.
 
 ## Pruebas
 
+**Tests unitarios (gratis, sin `OPENAI_API_KEY`, corren en cada push/PR
+vía `.github/workflows/ci.yml`):**
+
+```bash
+pytest tests/test_unit.py -v
+```
+
+Cubre `notes.py` (extracción y emparejamiento de notas) y las rutas de
+`analizar_foto` que fallan antes de tocar el modelo (archivo inexistente,
+path traversal, formato no soportado), más extracción de EXIF sobre una
+foto real. Verificado sin ningún `.env` presente para confirmar que no
+depende de la API.
+
+**Smoke test (llamadas reales, con costo — no corre automático; ver
+`.github/workflows/integracion-pagada.yml`):**
+
 ```bash
 python tests/test_smoke.py
 ```
