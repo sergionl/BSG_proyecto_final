@@ -1,0 +1,6 @@
+# Dependencias del agente real (se reutiliza tal cual, sin duplicar versiones).
+-r ../mvp/requirements.txt
+
+# Solo para esta carpeta de verificacion, no son dependencias de la app:
+deepeval
+pytest
