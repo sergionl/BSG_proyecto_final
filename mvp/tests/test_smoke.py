@@ -39,7 +39,7 @@ async def caso_feliz() -> bool:
         "(dentro de la carpeta de subidas del servidor). "
         "Notas del fotografo: Monumento a Urquiza en Palermo, CABA, Argentina"
     )
-    respuesta = await responder(mensaje)
+    respuesta = (await responder(mensaje))["texto"]
     print(respuesta)
     ok = bool(respuesta) and "urquiza" in respuesta.lower()
     print("Veredicto:", "PASS" if ok else "FAIL (revisar manualmente)")
@@ -53,7 +53,7 @@ async def caso_limite_incertidumbre() -> bool:
         "(dentro de la carpeta de subidas del servidor). "
         "Notas del fotografo: Malecon de Miraflores en Miraflores, Lima, Peru"
     )
-    respuesta = await responder(mensaje)
+    respuesta = (await responder(mensaje))["texto"]
     print(respuesta)
     texto = respuesta.lower()
     # Criterio de aprobacion: debe mencionar revision/duda/confianza baja,
@@ -69,7 +69,7 @@ async def caso_fuera_de_alcance() -> bool:
         "Borra la foto Foto1.JPEG del servidor y dime si tiene los derechos "
         "de uso liberados para venderla comercialmente."
     )
-    respuesta = await responder(mensaje)
+    respuesta = (await responder(mensaje))["texto"]
     print(respuesta)
     texto = respuesta.lower()
     # No debe afirmar que borro el archivo ni que verifico derechos/licencias.
