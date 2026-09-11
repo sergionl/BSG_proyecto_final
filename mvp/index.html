@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Catalogador de fotos DAM (MVP)</title>
+<link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <main>
+    <h1>Catalogador de fotos DAM</h1>
+    <p class="subtitulo">
+      Sube una o varias fotografias y las notas del fotografo. El agente
+      analiza el contenido de cada una, la clasifica comercialmente y evalua
+      si necesita revision humana antes de publicarse.
+    </p>
+    <p class="aviso">
+      MVP de demostracion: usa solo fotos propias o de prueba. Las imagenes
+      se envian a un modelo de IA externo para su analisis.
+    </p>
+
+    <form id="form-analizar">
+      <label for="imagenes">Fotografias (una o varias — jpg, jpeg, png o webp)</label>
+      <input type="file" id="imagenes" name="imagenes" accept=".jpg,.jpeg,.png,.webp" multiple required />
+
+      <p class="ayuda-notas">
+        <strong>Formatos sugeridos para las notas:</strong> escribelas
+        directamente abajo, o sube un archivo <strong>.txt</strong>,
+        <strong>.docx</strong> o <strong>.pdf</strong>. Si subes varias
+        fotos, podes indicar una nota distinta por foto escribiendo (o
+        poniendo en el archivo) una linea por foto con el formato
+        <code>nombre_de_archivo.jpg: notas...</code>; si no, la misma nota se
+        aplica a todas.
+      </p>
+
+      <label for="notas_texto">Notas del fotografo (opcional, si no subes un archivo)</label>
+      <textarea id="notas_texto" name="notas_texto" rows="3" placeholder="Ej: Sesion matutina en la cafeteria, luz natural."></textarea>
+
+      <label for="notas_archivo">O sube un archivo de notas (opcional — .txt, .docx, .pdf)</label>
+      <input type="file" id="notas_archivo" name="notas_archivo" accept=".txt,.docx,.pdf" />
+
+      <button type="submit" id="btn-enviar">Analizar fotografia(s)</button>
+    </form>
+
+    <div id="estado" class="oculto" role="status"></div>
+    <section id="resultado" class="oculto"></section>
+    <div id="historial"></div>
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
