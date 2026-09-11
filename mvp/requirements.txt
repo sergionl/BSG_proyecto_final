@@ -1,0 +1,18 @@
+fastapi
+uvicorn[standard]
+# Pineado <4: fastmcp 4.x requiere mcp>=2.0, incompatible con
+# langchain-mcp-adapters (que aun necesita la forma 1.x de mcp). Server y
+# cliente comparten este mismo venv, asi que deben poder convivir.
+fastmcp<4
+langchain
+langchain-openai
+langchain-mcp-adapters>=0.3.2
+python-dotenv
+pydantic
+exifread
+openai
+python-multipart
+# Unica dependencia nueva para notas en PDF: no hay forma razonable de
+# extraer texto de un PDF con la libreria estandar. docx se lee sin
+# dependencia extra (es un zip + XML, ver notes.py).
+pypdf
