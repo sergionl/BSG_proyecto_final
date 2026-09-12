@@ -1,8 +1,11 @@
 name: CI
 
-# Corre en cada push y PR. Todo lo que hay aca es GRATIS: nada llama a la
-# API de OpenAI, no necesita ningun secret. Los tests que si llaman al
-# modelo real (mvp/tests/test_smoke.py, test_security*.py, y el dataset de
+# Corre en cada push y PR. Todo lo que hay aca es GRATIS: nada hace una
+# llamada real a la API de OpenAI, y no requiere configurar ningun secret
+# en el repositorio (el job de verificacion/ usa una clave falsa inline,
+# ver mas abajo -- deepeval solo necesita que la variable exista para
+# construir sus objetos, no la valida). Los tests que si llaman al modelo
+# real (mvp/tests/test_smoke.py, test_security*.py, y el dataset de
 # verificacion/) tienen costo y viven en un workflow aparte disparado a
 # mano: ver .github/workflows/integracion-pagada.yml.
 
@@ -62,4 +65,11 @@ jobs:
         run: pip install -r verificacion/requirements.txt
       - name: Verificar que el harness de evaluacion importa sin errores
         working-directory: verificacion
+        # metricas.py construye un GEval de deepeval al importarse, y
+        # deepeval exige que OPENAI_API_KEY *exista* para construirlo (no
+        # la valida ni hace ninguna llamada real solo por importar). Un
+        # valor falso alcanza: no gasta nada y no requiere configurar
+        # ningun secret real para este job.
+        env:
+          OPENAI_API_KEY: sk-ci-import-check-no-es-una-clave-real
         run: python -c "import dataset, metricas, traza, prompts_fragmentos, conftest; print('OK')"
