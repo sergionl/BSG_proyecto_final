@@ -1,3 +1,8 @@
 exifread>=3.0
 openai>=1.0
 # rawpy>=0.19  # opcional: solo si vas a mandar archivos RAW (CR2/NEF/ARW/DNG...) a la Etapa 3
+
+# Solo para generar/correr los fixtures de tests/ (_make_test_fixtures.py):
+# no son dependencias del pipeline en si.
+Pillow
+piexif

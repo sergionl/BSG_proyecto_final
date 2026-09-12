@@ -126,8 +126,11 @@ chico primero.
   el siguiente paso natural si esta suite pasa a usarse en serio (etiquetar
   30-50 casos a mano, medir acuerdo corregido por azar, fijar los
   `evaluation_steps` del juez en vez de dejar que se regeneren).
-- **Integración a CI** (el PR no pasa si la suite baja) — no hay pipeline
-  de CI en este repo todavía.
+- **El dataset completo (24 casos) no corre en CI** — su costo es varias
+  veces mayor que el de `mvp/tests/`, que sí tiene un workflow manual
+  (`.github/workflows/integracion-pagada.yml`, ver README raíz). Lo más
+  cercano que corre automático es el chequeo de que estos módulos importan
+  sin errores (`ci.yml`), no que el PR falle si una métrica baja.
 - **Métricas de producción** (costo por tarea, latencia p95, tasa de
   bucles, revisión humana muestreada) — aplican cuando haya tráfico real,
   no a un MVP local sin desplegar.

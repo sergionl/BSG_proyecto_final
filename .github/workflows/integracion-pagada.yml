@@ -1,0 +1,81 @@
+name: Integracion pagada (manual)
+
+# Corre los tests que llaman de verdad a la API de OpenAI (mvp/tests/
+# test_smoke.py, test_security.py y, opcionalmente, test_security_visual.py).
+# A proposito NO se dispara con push ni con pull_request: cada corrida
+# cuesta varias decenas de llamadas reales al modelo. Se activa a mano
+# desde la pestana "Actions" de GitHub -> este workflow -> "Run workflow".
+#
+# Requiere el secret OPENAI_API_KEY configurado en el repositorio
+# (Settings -> Secrets and variables -> Actions -> New repository secret).
+
+on:
+  workflow_dispatch:
+    inputs:
+      incluir_inyeccion_visual:
+        description: "Tambien correr test_security_visual.py (4 llamadas reales mas)"
+        type: boolean
+        default: true
+
+jobs:
+  smoke-y-seguridad:
+    name: mvp - smoke test + pruebas de seguridad (con costo real)
+    runs-on: ubuntu-latest
+    env:
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+          cache: "pip"
+
+      - name: Instalar dependencias del MVP
+        working-directory: mvp
+        run: pip install -r requirements.txt
+
+      - name: Verificar que el secret OPENAI_API_KEY este configurado
+        run: |
+          if [ -z "$OPENAI_API_KEY" ]; then
+            echo "::error::Falta el secret OPENAI_API_KEY en este repositorio (Settings > Secrets and variables > Actions)."
+            exit 1
+          fi
+
+      - name: Preparar fixtures (Foto1.JPEG y Foto3.jpg en data/uploads/)
+        # data/uploads/ esta gitignoreado a proposito (mvp/.gitignore); en
+        # un checkout limpio solo queda el .gitkeep, asi que copiamos las
+        # mismas fotos que test_smoke.py y test_security.py esperan.
+        run: |
+          cp fotos/Foto1.JPEG mvp/data/uploads/Foto1.JPEG
+          cp fotos/Foto3.jpg mvp/data/uploads/Foto3.jpg
+
+      - name: Levantar el servidor MCP en background
+        working-directory: mvp
+        run: |
+          nohup python -m uvicorn api.mcp:app --port 8001 > mcp_server.log 2>&1 &
+          for i in $(seq 1 20); do
+            if curl -s -o /dev/null http://127.0.0.1:8001/; then
+              echo "Servidor MCP listo."
+              break
+            fi
+            sleep 1
+          done
+
+      - name: Prueba de humo (caso feliz / limite / fuera de alcance)
+        working-directory: mvp
+        run: python tests/test_smoke.py
+
+      - name: Pruebas de seguridad (prompt injection por texto, 4 casos)
+        working-directory: mvp
+        run: python tests/test_security.py
+
+      - name: Pruebas de seguridad (prompt injection visual, 4 casos)
+        if: ${{ inputs.incluir_inyeccion_visual }}
+        working-directory: mvp
+        run: python tests/test_security_visual.py
+
+      - name: Mostrar el log del servidor MCP si algo fallo
+        if: failure()
+        working-directory: mvp
+        run: cat mcp_server.log || true
