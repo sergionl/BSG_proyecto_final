@@ -226,9 +226,6 @@ archivo de texto renombrado a `.jpg`.
   simple (¿el texto antes de los dos puntos parece un nombre de archivo?);
   una nota que por casualidad contenga algo como `www.ejemplo.com:` podría
   interpretarse mal. Caso de borde aceptable para un MVP.
-- No existe una "Ficha 3 (datos y ETL)" para este proyecto — se usó como
-  sustituto el contrato de entrada/salida de la Ficha 1 y la evidencia del
-  PoC.
 - El nombre de variable de entorno es `OPENAI_API_KEY` en vez de
   `OPENROUTER_API_KEY` (la guía del curso asume OpenRouter por defecto);
   ver la razón en la sección de decisiones más arriba.

@@ -112,9 +112,10 @@ su propio costo es varias veces mayor que el de estos dos workflows juntos
 
 - [`documentos/Caso de uso.docx`](documentos/Caso%20de%20uso.docx) — Ficha 1: problema, TADR, contrato de entrada/salida.
 - [`documentos/Arquitectura cognitiva.docx`](documentos/Arquitectura%20cognitiva.docx) — Ficha 2: nivel de autonomía, agentes, herramientas.
-- [`PromptsparaAgentesPoCaMVP(02092026082740).pdf`](PromptsparaAgentesPoCaMVP%2802092026082740%29.pdf) y [`DelPoCalMVP(02092026082753).pptx`](DelPoCalMVP%2802092026082753%29.pptx) — guías del curso usadas como base para migrar el PoC al MVP.
-- No existe una "Ficha 3 (datos y ETL)" para este proyecto — el PoC y el
-  MVP usan como sustituto el contrato de entrada/salida de la Ficha 1.
+
+Las guías del curso usadas como referencia para migrar el PoC al MVP no
+están incluidas en este repo (no son material propio del equipo). Este
+proyecto solo tiene Fichas 1 y 2 — no hay una "Ficha 3" en su currícula.
 
 ## Qué queda pendiente (declarado, no escondido)
 
@@ -125,4 +126,3 @@ su propio costo es varias veces mayor que el de estos dos workflows juntos
   llamadas a la API y no se hizo de punta a punta todavía.
 - **Calibración formal del juez LLM** (kappa contra un set etiquetado a
   mano) en `verificacion/`.
-- **Integración a CI**: no hay pipeline que corra las pruebas automáticamente en cada cambio.
